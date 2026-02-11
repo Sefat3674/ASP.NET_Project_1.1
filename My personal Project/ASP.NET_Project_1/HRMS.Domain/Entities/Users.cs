@@ -1,0 +1,31 @@
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace HRMS.Domain.Entities
+{
+    public class Users
+    {
+        [Key]
+        public int UserId { get; set; }
+
+        [Required, StringLength(100)]
+        public string UserName { get; set; }
+
+        [Required, StringLength(255)]
+        public string PasswordHash { get; set; }
+        public string PasswordHash1 { get; set; }
+        [Required]
+        public int RoleId { get; set; }
+
+        public bool IsActive { get; set; } = true;
+
+        public DateTime CreateAt { get; set; } = DateTime.Now;
+
+        // Navigation
+        [ForeignKey("RoleId")]
+        public Roles Role { get; set; }
+
+        public UserProfile UserProfile { get; set; } // One-to-one
+    }
+}

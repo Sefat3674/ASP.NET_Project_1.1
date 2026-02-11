@@ -14,7 +14,7 @@ namespace HRMS.Domain.Entities
 
         [Required, StringLength(255)]
         public string PasswordHash { get; set; }
-
+        public string PasswordHash1 { get; set; }
         [Required]
         public int RoleId { get; set; }
 

@@ -3,20 +3,30 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
-        options.JsonSerializerOptions.MaxDepth = 64; // optional
-    });
-builder.Services.AddOpenApi();
+// 🔹 Add services to the container (clean JSON, no $id/$values)
+builder.Services.AddControllers(); // removed ReferenceHandler.Preserve
 
-// 🔹 Add DbContext here
+// 🔹 Add DbContext
 builder.Services.AddDbContext<HRMSDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")
     ));
+
+// 🔹 Add OpenAPI/Swagger
+builder.Services.AddOpenApi();
+
+// 🔹 Add CORS for Angular frontend
+var frontendOrigin = "http://localhost:4200";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "AllowAngularApp",
+        policy =>
+        {
+            policy.WithOrigins(frontendOrigin)
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
 
 var app = builder.Build();
 
@@ -27,6 +37,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// 🔹 Enable CORS
+app.UseCors("AllowAngularApp");
 
 app.UseAuthorization();
 

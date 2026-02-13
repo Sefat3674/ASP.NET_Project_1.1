@@ -2,6 +2,7 @@
 using HRMS.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using HRMS.API.DTOs;
 
 namespace HRMS.API.Controllers
 {
@@ -19,19 +20,22 @@ namespace HRMS.API.Controllers
         [HttpGet("users")]
         public async Task<IActionResult> GetUsers()
         {
-            try
-            {
-                var users = await _context.Users
-                    .Include(u => u.Role)          // include Role
-                    .Include(u => u.UserProfile)   // include Profile
-                    .ToListAsync();
+            var users = await _context.Users
+                .Include(u => u.Role)
+                .Include(u => u.UserProfile)
+                .Select(u => new UsersDto
+                {
+                    UserId = u.UserId,
+                    UserName = u.UserName,
+                    RoleName = u.Role.RoleName,
+                    FullName = u.UserProfile.FullName,
+                    IsActive = u.IsActive,
+                    Email = u.UserProfile.Email,
+                    Phone = u.UserProfile.Phone
+                })
+                .ToListAsync();
 
-                return Ok(users);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
+            return Ok(users);
         }
 
         [HttpGet("roles")]

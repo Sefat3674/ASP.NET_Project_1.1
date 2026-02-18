@@ -82,6 +82,7 @@ The API uses four tables:
 
 ---
 ---
+PostMan Collection Link : https://sefatahmed3674-2785898.postman.co/workspace/sefat-ahmed-Team's-Workspace~da36a4e5-6679-406f-8d59-6a0b08bd53b2/collection/50102977-d29b30d7-9ae1-4c3d-882d-eb0c366e7f87?action=share&source=copy-link&creator=50102977
 
 ## Postman Workflow
 
@@ -131,7 +132,4 @@ pm.test("User Created", function () {
     var jsonData = pm.response.json();
     pm.environment.set("userId", jsonData.userId);
 });
-
-
-
 

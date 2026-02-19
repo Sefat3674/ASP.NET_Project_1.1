@@ -14,11 +14,11 @@ namespace HRMS.Domain.Entities
 
         [Required, StringLength(255)]
         public string PasswordHash { get; set; }
-        public string PasswordHash1 { get; set; }
+       
         [Required]
         public int RoleId { get; set; }
 
-        public bool IsActive { get; set; } = true;
+            public bool IsActive { get; set; } = true;
 
         public DateTime CreateAt { get; set; } = DateTime.Now;
 
@@ -27,5 +27,7 @@ namespace HRMS.Domain.Entities
         public Roles Role { get; set; }
 
         public UserProfile UserProfile { get; set; } // One-to-one
+        public ICollection<Attendance> Attendance { get; set; } = new List<Attendance>();
+        public ICollection<SalaryStructure> SalaryStructure { get; set; } = new List<SalaryStructure>();
     }
 }

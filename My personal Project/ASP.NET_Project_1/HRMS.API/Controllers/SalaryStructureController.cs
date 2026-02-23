@@ -54,14 +54,19 @@ namespace HRMS.API.Controllers
             });
         }
 
-        public async Task<IActionResult> InsertSalaryBonus(int userId, [FromBody] UserSalaryDto dto)
+       
+        [HttpPost("insertSalaryBonusDeduction/{UserId}")]
+        public async Task<IActionResult> InsertSalaryBonusDeduction(int UserId, [FromBody] SalaryAdjustmentDto dto)
         {
-            dto.UserId = userId;
-            var result = await _SalaryStructureRepo.InsertSalaryBonusAsync(dto);
+            dto.UserId = UserId;
+            var result = await _SalaryStructureRepo.InsertSalaryAdjustmentAsync(dto);
+            if (!result)
+                return BadRequest("Failed to insert salary adjustments.");
+
             return Ok(new
             {
-                Message = "Salary Bonuses Inserted successfully.",
-                BonusId = result
+                Message = "Salary bonuses and deductions inserted successfully.",
+                UserId = UserId
             });
         }
 

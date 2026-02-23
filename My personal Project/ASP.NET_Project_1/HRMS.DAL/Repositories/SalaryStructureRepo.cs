@@ -131,43 +131,52 @@ namespace HRMS.DAL.Repositories
 
             return newSalary.SalaryStructureId;
         }
-        public async Task<int> InsertSalaryBonusAsync(UserSalaryDto dto)
+        public async Task<bool> InsertSalaryAdjustmentAsync(SalaryAdjustmentDto dto)
         {
             if (dto == null)
                 throw new ArgumentNullException(nameof(dto));
-            var BonusDeduction = new Bonuses
+
+            // Insert Bonuses
+            if (dto.Bonuses != null && dto.Bonuses.Any())
             {
-                UserId = dto.UserId,
-                BonusId = dto.BonusId,
-                BonusType = dto.BonusType,
-                BonusAmount = dto.BonusAmount,
-                Description = dto.Description,
-                BonusMonth = dto.BonusMonth,
-                BonusYear = dto.BonusYear,
-                
-            };
-            _context.Bonuses.Add(BonusDeduction);
-            await _context.SaveChangesAsync();
-            return BonusDeduction.UserId;
+                foreach (var item in dto.Bonuses)
+                {
+                    var bonus = new Bonuses
+                    {
+                        UserId = dto.UserId,
+                        BonusType = item.BonusType,
+                        BonusAmount = item.Amount,
+                        Description = item.Description,
+                        BonusMonth = dto.Month,
+                        BonusYear = dto.Year
+                    };
 
-        }
-        public async Task<int> InsertSalaryDeductionAsync(UserSalaryDto dto)
-        {
-            if (dto == null)
-                throw new ArgumentNullException(nameof(dto));
-            var SalaryDeduction = new Deductions
+                    _context.Bonuses.Add(bonus);
+                }
+            }
+
+            // Insert Deductions
+            if (dto.Deductions != null && dto.Deductions.Any())
             {
-                DeductionType = dto.DeductionType,
-                DeductionAmount = dto.DeductionAmount,
-                DeductionDescription = dto.DeductionDescription,
-                DeductionMonth = dto.DeductionMonth,
-                DeductionYear = dto.DeductionYear
+                foreach (var item in dto.Deductions)
+                {
+                    var deduction = new Deductions
+                    {
+                        UserId = dto.UserId,
+                        DeductionType = item.DeductionType,
+                        DeductionAmount = item.Amount,
+                        DeductionDescription = item.Description,
+                        DeductionMonth = dto.Month,
+                        DeductionYear = dto.Year
+                    };
 
-            };
-            _context.Deductions.Add(SalaryDeduction);
+                    _context.Deductions.Add(deduction);
+                }
+            }
+
             await _context.SaveChangesAsync();
-            return SalaryDeduction.UserId;
 
+            return true;
         }
 
 

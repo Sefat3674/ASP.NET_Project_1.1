@@ -96,6 +96,13 @@ namespace HRMS.API.Controllers
             });
         }
 
+        [HttpGet("getAll")]
+        public async Task<IActionResult> GetAllPayrollPeriods()
+        {
+            var payrolls = await _SalaryStructureRepo.GetAllPayrollPeriods();
+            return Ok(payrolls);
+        }
+
 
 
 

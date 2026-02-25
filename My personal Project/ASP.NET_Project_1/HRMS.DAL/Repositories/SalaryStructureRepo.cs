@@ -257,6 +257,30 @@ namespace HRMS.DAL.Repositories
 
             return resultDto;
         }
+        public async Task<List<PayrollPeriodDto>> GetAllPayrollPeriods()
+        {
+            var payrollPeriods = await _context.PayrollPeriod
+                .OrderByDescending(p => p.Year)
+                .ThenByDescending(p => p.Month)
+                .ToListAsync();
+
+            // Map entities to DTOs
+            var dtoList = payrollPeriods.Select(p => new PayrollPeriodDto
+            {
+                PayrollPeriodId = p.PayrollPeriodId,
+                PayrollCode = p.PayrollCode,
+                Month = p.Month,
+                Year = p.Year,
+                StartDate = p.StartDate,
+                EndDate = p.EndDate,
+                Status = p.Status,
+                IsLocked = p.IsLocked,
+                CreatedBy = p.CreatedBy,
+                CreatedAt = p.CreatedAt
+            }).ToList();
+
+            return dtoList;
+        }
 
 
 

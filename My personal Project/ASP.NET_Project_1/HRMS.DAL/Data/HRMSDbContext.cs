@@ -17,6 +17,7 @@ namespace HRMS.DAL.Data
         public DbSet<Deductions> Deductions { get; set; }
         public DbSet<Bonuses> Bonuses { get; set; }
         public DbSet<PayrollPeriod> PayrollPeriod { get; set; }
+        public DbSet<SalarySlip> SalarySlip { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -91,6 +92,19 @@ namespace HRMS.DAL.Data
                  .WithMany(u => u.Bonuses)
                  .HasForeignKey(a => a.UserId)
                  .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<SalarySlip>(entity =>
+            {
+                // Unique constraint (User + Month + Year)
+                entity.HasIndex(s => new { s.UserId, s.SalaryMonth, s.SalaryYear })
+                      .IsUnique();
+
+                // One User -> Many SalarySlips
+                entity.HasOne(s => s.Users)
+                      .WithMany(u => u.SalarySlips)
+                      .HasForeignKey(s => s.UserId)
+                      .OnDelete(DeleteBehavior.Restrict); // or Cascade (your choice)
+            });
 
         }
     }

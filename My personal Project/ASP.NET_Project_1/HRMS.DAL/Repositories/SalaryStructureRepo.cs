@@ -281,6 +281,54 @@ namespace HRMS.DAL.Repositories
 
             return dtoList;
         }
+        public async Task<List<SalarySlipDto>> GetSalarySlipsAsync(int? userId = null, int? month = null, int? year = null)
+        {
+            var query = _context.SalarySlip.AsQueryable();
+
+            // Apply optional filters
+            if (userId.HasValue)
+                query = query.Where(x => x.UserId == userId.Value);
+
+            if (month.HasValue)
+                query = query.Where(x => x.SalaryMonth == month.Value);
+
+            if (year.HasValue)
+                query = query.Where(x => x.SalaryYear == year.Value);
+
+            var result = await query
+                .Select(ss => new SalarySlipDto
+                {
+                    UserId = ss.UserId,
+                    UserName = ss.Users.UserName, // Assuming SalarySlip has navigation property User
+                    SalaryMonth = ss.SalaryMonth,
+                    MonthName = new[] { "", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" }[ss.SalaryMonth],
+                    SalaryYear = ss.SalaryYear,
+                    BasicSalary = ss.BasicSalary,
+                    HouseRentAllowance = ss.HouseRentAllowance,
+                    MedicalAllowance = ss.MedicalAllowance,
+                    OtherAllowance = ss.OtherAllowance,
+                    TotalBonus = ss.TotalBonus,
+                    TotalDeduction = ss.TotalDeduction,
+                    NetSalary = ss.NetSalary,
+
+                    BonusDetails = string.Join(", ",
+                        _context.Bonuses
+                            .Where(b => b.UserId == ss.UserId
+                                     && b.BonusMonth == ss.SalaryMonth
+                                     && b.BonusYear == ss.SalaryYear)
+                            .Select(b => b.BonusType + "(" + b.BonusAmount + ")")),
+
+                    DeductionDetails = string.Join(", ",
+                        _context.Deductions
+                            .Where(d => d.UserId == ss.UserId
+                                     && d.DeductionMonth == ss.SalaryMonth
+                                     && d.DeductionYear == ss.SalaryYear)
+                            .Select(d => d.DeductionType + "(" + d.DeductionAmount + ")"))
+                })
+                .ToListAsync();
+
+            return result;
+        }
 
 
 

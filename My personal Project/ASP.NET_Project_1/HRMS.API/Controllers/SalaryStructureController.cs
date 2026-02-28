@@ -192,6 +192,14 @@ namespace HRMS.API.Controllers
                 return StatusCode(500, new { error = ex.Message });
             }
         }
+
+        [HttpGet("getSalarySlips")]
+        public async Task<IActionResult> GetSalarySlips([FromQuery] int? userId,[FromQuery] int? month,[FromQuery] int? year)
+        {
+            var result = await _SalaryStructureRepo.GetSalarySlipsAsync(userId, month, year);
+
+            return Ok(result);
+        }
     }
 
 

@@ -17,6 +17,7 @@ namespace HRMS.DAL.Repositories.Interfaces
         Task<SalaryAdjustmentDto> GetSalaryAdjustmentByUserAsync(int UserId);
         Task<PayrollPeriodDto> CreatePayrollPeriod(PayrollPeriodDto dto);
         Task<List<PayrollPeriodDto>> GetAllPayrollPeriods();
+        Task<List<SalarySlipDto>> GetSalarySlipsAsync(int? userId = null, int? month = null, int? year = null);
 
 
 
